@@ -45,5 +45,7 @@ struct ChallengeDetailView: View {
 }
 
 #Preview {
-//    ChallengeDetailView()
+    let challenge = Challenge(id: "c2", name: "하루 한 챕터 독서", description: "매일 책 한 챕터씩 읽기", startDate: Date(), endDate: Date().addingTimeInterval(30*24*3600), progress: 0.2, participants: [])
+    
+    ChallengeDetailView(challenge: challenge)
 }

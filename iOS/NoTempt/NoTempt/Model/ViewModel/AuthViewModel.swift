@@ -11,24 +11,44 @@ import Foundation
 class AuthViewModel: ObservableObject {
     @Published var isLoggedIn: Bool = false
     @Published var user: User?
+    
+    @Published var loginError: String? // 로그인 실패 시 오류 메시지
+    
+    private let apiService = APIService.shared
 
-    // 이니셜라이저에서 토큰 유효성을 즉시 검사
     init() {
         checkTokenValidity()
     }
     
-    // API 통신을 통해 로그인 처리
+    // 이메일과 비밀번호로 로그인 요청
     func login(email: String, password: String) {
-        // 실제로는 APIService를 통해 로그인 API 호출
-        // URLSession.shared.dataTask(with: loginRequest) { ... }
+        // 클라이언트 측 유효성 검사
+        if email.isEmpty || password.isEmpty {
+            self.loginError = "이메일과 비밀번호를 입력해주세요."
+            return
+        }
         
-        // 성공했다고 가정하고 토큰과 유저 정보 저장
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            let dummyToken = "dummy-jwt-token" // 서버에서 받은 토큰
-            JWTManager.saveToken(dummyToken)
-            self.isLoggedIn = true
-            self.user = User(id: "user123", email: email, name: "테스터", profileImageUrl: nil)
-            print("로그인 성공 및 토큰 저장 완료")
+        let loginRequest = LoginRequest(email: email, password: password)
+        
+        apiService.login(request: loginRequest) { result in
+            switch result {
+            case .success(let response):
+                // 서버로부터 받은 JWT 토큰 저장
+                JWTManager.saveToken(response.token)
+                self.isLoggedIn = true
+                self.user = User(id: "user123", email: email, name: "테스터", profileImageUrl: nil)
+                print("로그인 성공! JWT 토큰 저장 완료")
+            case .failure(let error):
+                // 로그인 실패 시 오류 메시지 설정
+                switch error {
+                case .invalidCredentials:
+                    self.loginError = "이메일 또는 비밀번호가 올바르지 않습니다."
+                default:
+                    self.loginError = "로그인에 실패했습니다. 다시 시도해주세요."
+                }
+                print("로그인 실패: \(error)")
+                self.isLoggedIn = false
+            }
         }
     }
     
@@ -38,11 +58,10 @@ class AuthViewModel: ObservableObject {
         JWTManager.deleteToken()
 #endif
         if let token = JWTManager.getToken() {
-            // 실제로는 API 호출을 통해 토큰 유효성을 검증
-            // APIService.shared.request(...)
+            // 실제로는 API 호출을 통해 토큰 유효성 검증
+            // APIService.shared.validateToken(...)
             print("저장된 토큰 발견, 유효성 검사 시작...")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                // 검사 성공했다고 가정
                 self.isLoggedIn = true
                 self.user = User(id: "user123", email: "test@example.com", name: "테스터", profileImageUrl: nil)
                 print("토큰 유효, 자동 로그인")
@@ -53,11 +72,21 @@ class AuthViewModel: ObservableObject {
         }
     }
     
-    // 로그아웃 로직
     func logout() {
         self.isLoggedIn = false
         self.user = nil
         JWTManager.deleteToken()
         print("로그아웃 완료 및 토큰 삭제")
     }
+}
+
+// 로그인 요청에 사용될 데이터 모델
+struct LoginRequest: Codable {
+    let email: String
+    let password: String
+}
+
+// 로그인 응답에 사용될 데이터 모델
+struct LoginResponse: Codable {
+    let token: String
 }

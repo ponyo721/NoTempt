@@ -40,7 +40,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam(required = false) String email,
-                                   @RequestParam String password) {
+                                   @RequestParam(required = false)  String password) {
         System.out.println("로그인 요청: 이메일=" + email + ", 비밀번호=" + password);
 
         boolean success = userService.login(email, password);

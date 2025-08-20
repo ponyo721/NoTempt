@@ -93,12 +93,11 @@ class APIService {
         
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
         
         do {
-            let jsonData = try JSONEncoder().encode(request)
-            print("jsonData: \(String(data: jsonData, encoding: .utf8) ?? "error")")
+            let jsonData = "email=\(request.email)&password=\(request.password)".data(using: .utf8)
             urlRequest.httpBody = jsonData
         } catch {
             completion(.failure(.decodingError))

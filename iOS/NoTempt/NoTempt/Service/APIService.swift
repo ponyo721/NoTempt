@@ -95,14 +95,10 @@ class APIService {
         urlRequest.httpMethod = "POST"
         urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+            
+        let jsonData = "email=\(request.email)&password=\(request.password)".data(using: .utf8)
+        urlRequest.httpBody = jsonData
         
-        do {
-            let jsonData = "email=\(request.email)&password=\(request.password)".data(using: .utf8)
-            urlRequest.httpBody = jsonData
-        } catch {
-            completion(.failure(.decodingError))
-            return
-        }
         
         URLSession.shared.dataTask(with: urlRequest) { data, response, error in
             guard let data = data, error == nil else {

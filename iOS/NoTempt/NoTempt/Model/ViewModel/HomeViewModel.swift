@@ -13,7 +13,7 @@ class HomeViewModel: ObservableObject {
     
     func fetchChallenges() {
         // 실제 API 엔드포인트 URL로 변경해야 함
-        guard let url = URL(string: "https://api.yourchallengeapp.com/challenges") else { return }
+        guard let url = URL(string: "\(serverAddress)\(challengesSubPath)") else { return }
 
         // APIService를 통해 챌린지 목록을 가져옴
         APIService.shared.request(url: url, method: "GET") { (result: Result<[Challenge], APIService.APIError>) in

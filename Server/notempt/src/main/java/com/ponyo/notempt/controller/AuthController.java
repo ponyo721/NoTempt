@@ -1,8 +1,7 @@
 package com.ponyo.notempt.controller;
 
-import com.ponyo.notempt.model.LoginRequest;
 import com.ponyo.notempt.model.User;
-import com.ponyo.notempt.model.UserRepository;
+import com.ponyo.notempt.repository.UserRepository;
 import com.ponyo.notempt.service.JwtTokenService;
 import com.ponyo.notempt.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

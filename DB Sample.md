@@ -49,3 +49,23 @@ INSERT INTO places (
     CURRENT_TIMESTAMP,
     CURRENT_TIMESTAMP
 );
+
+
+----
+
+CREATE TABLE challenge (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255),
+    description VARCHAR(255),
+    progress DOUBLE
+);
+
+
+
+---- 
+
+CREATE TABLE challenge_participants (
+    challenge_id BIGINT,
+    participants VARCHAR(255),
+    FOREIGN KEY (challenge_id) REFERENCES challenge(id)
+);

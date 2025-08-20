@@ -28,6 +28,7 @@ class AuthViewModel: ObservableObject {
             return
         }
         
+        print("로그인 요청: \(email), \(password)")
         let loginRequest = LoginRequest(email: email, password: password)
         
         apiService.login(request: loginRequest) { result in
@@ -46,7 +47,7 @@ class AuthViewModel: ObservableObject {
                 default:
                     self.loginError = "로그인에 실패했습니다. 다시 시도해주세요."
                 }
-                print("로그인 실패: \(error)")
+                print("로그인 실패: \(error.localizedDescription)")
                 self.isLoggedIn = false
             }
         }
@@ -89,4 +90,9 @@ struct LoginRequest: Codable {
 // 로그인 응답에 사용될 데이터 모델
 struct LoginResponse: Codable {
     let token: String
+}
+
+// test api
+struct TestPostResponse: Codable {
+    let id: Int
 }

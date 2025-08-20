@@ -39,8 +39,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String email,
+    public ResponseEntity<?> login(@RequestParam(required = false) String email,
                                    @RequestParam String password) {
+        System.out.println("로그인 요청: 이메일=" + email + ", 비밀번호=" + password);
+
         boolean success = userService.login(email, password);
         if (!success) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 실패: 잘못된 이메일 또는 비밀번호");

@@ -16,8 +16,118 @@ class APIService {
         case noData
         case decodingError
         case authError
+        case invalidCredentials
+        case tokenExpired
         case unknownError
-        case tokenExpired // 새로운 오류 타입 추가
+    }
+    
+    // 로그인 API 호출
+    func testPost() {
+        let url1 = URL(string: "http://jsonplaceholder.typicode.com/posts")!
+        let url2 = URL(string: "https://jsonplaceholder.typicode.com/posts")!
+              
+        var urlRequest1 = URLRequest(url: url1)
+        urlRequest1.httpMethod = "POST"
+        urlRequest1.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest1.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        var urlRequest2 = URLRequest(url: url2)
+        urlRequest2.httpMethod = "POST"
+        urlRequest2.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest2.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        URLSession.shared.dataTask(with: urlRequest1) { data, response, error in
+            guard let data = data, error == nil else {
+                return
+            }
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 401 {
+                    
+                    return
+                } else if !(200...299).contains(httpResponse.statusCode) {
+                    
+                    return
+                }
+            }
+            
+            do {
+                let decodedResponse = try JSONDecoder().decode(TestPostResponse.self, from: data)
+                print("decodedResponse1: \(decodedResponse.id)")
+            } catch {
+                
+            }
+        }.resume()
+        
+        URLSession.shared.dataTask(with: urlRequest2) { data, response, error in
+            guard let data = data, error == nil else {
+                return
+            }
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 401 {
+                    
+                    return
+                } else if !(200...299).contains(httpResponse.statusCode) {
+                    
+                    return
+                }
+            }
+            
+            do {
+                let decodedResponse = try JSONDecoder().decode(TestPostResponse.self, from: data)
+                print("decodedResponse2: \(decodedResponse.id)")
+            } catch {
+                
+            }
+        }.resume()
+    }
+    
+    // 로그인 API 호출
+    func login(request: LoginRequest, completion: @escaping (Result<LoginResponse, APIError>) -> Void) {
+        guard let url = URL(string: "\(serverAddress)\(loginSubPath)") else {
+            completion(.failure(.invalidURL))
+            return
+        }
+        print("login url: \(url)")
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+        
+        do {
+            let jsonData = try JSONEncoder().encode(request)
+            print("jsonData: \(String(data: jsonData, encoding: .utf8) ?? "error")")
+            urlRequest.httpBody = jsonData
+        } catch {
+            completion(.failure(.decodingError))
+            return
+        }
+        
+        URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+            guard let data = data, error == nil else {
+                DispatchQueue.main.async { completion(.failure(.noData)) }
+                return
+            }
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode == 401 {
+                    DispatchQueue.main.async { completion(.failure(.invalidCredentials)) }
+                    return
+                } else if !(200...299).contains(httpResponse.statusCode) {
+                    DispatchQueue.main.async { completion(.failure(.unknownError)) }
+                    return
+                }
+            }
+            
+            do {
+                let decodedResponse = try JSONDecoder().decode(LoginResponse.self, from: data)
+                DispatchQueue.main.async { completion(.success(decodedResponse)) }
+            } catch {
+                DispatchQueue.main.async { completion(.failure(.decodingError)) }
+            }
+        }.resume()
     }
     
     func request<T: Decodable>(url: URL, method: String, completion: @escaping (Result<T, APIError>) -> Void) {

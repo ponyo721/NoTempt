@@ -10,9 +10,22 @@
 		36B3A4A62E546D4800069177 /* NoTempt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NoTempt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		36B3A4E52E5580AE00069177 /* Exceptions for "NoTempt" folder in "NoTempt" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 36B3A4A52E546D4800069177 /* NoTempt */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		36B3A4A82E546D4800069177 /* NoTempt */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				36B3A4E52E5580AE00069177 /* Exceptions for "NoTempt" folder in "NoTempt" target */,
+			);
 			path = NoTempt;
 			sourceTree = "<group>";
 		};
@@ -255,6 +268,9 @@
 				DEVELOPMENT_TEAM = 527QW3YNS8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NoTempt/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NoTempt;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -285,6 +301,9 @@
 				DEVELOPMENT_TEAM = 527QW3YNS8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NoTempt/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NoTempt;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

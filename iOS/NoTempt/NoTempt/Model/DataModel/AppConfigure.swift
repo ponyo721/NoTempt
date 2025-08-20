@@ -8,4 +8,6 @@
 import Foundation
 
 let serverAddress = "http://localhost:8080"
+
 let refreshTokenSubPath = "/api/refresh-token"
+let loginSubPath = "/api/login"
